@@ -376,12 +376,12 @@ export function MenuReader({ state, ready, adminOpen, onOpenAdmin }: MenuReaderP
 
       <Button
         variant="bookControl"
-        size="icon"
         onClick={onOpenAdmin}
-        aria-label="Menu settings"
-        className="absolute right-2 top-2 opacity-35 hover:opacity-100 focus-visible:opacity-100"
+        aria-label="Admin"
+        className="absolute right-2 top-2 flex items-center gap-1.5 px-3"
       >
         <Settings2 />
+        <span className="text-xs font-medium">Admin</span>
       </Button>
     </div>
   );
