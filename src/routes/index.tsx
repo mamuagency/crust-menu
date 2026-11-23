@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
+import { AdminLogin } from "@/components/menu/admin/AdminLogin";
 import { AdminPanel } from "@/components/menu/admin/AdminPanel";
 import { MenuReader } from "@/components/menu/MenuReader";
+import { supabaseMenuRepository } from "@/lib/menu/supabaseRepository";
 import { MenuStoreProvider, useMenuStore } from "@/lib/menu/store";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,7 +30,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <MenuStoreProvider>
+    <MenuStoreProvider repository={supabaseMenuRepository}>
       <MenuExperience />
     </MenuStoreProvider>
   );
@@ -36,6 +39,7 @@ function Index() {
 function MenuExperience() {
   const { loaded, saved, draft } = useMenuStore();
   const [adminOpen, setAdminOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const [livePreview, setLivePreview] = useState(true);
   const shown = adminOpen && livePreview ? draft : saved;
 
@@ -45,12 +49,31 @@ function MenuExperience() {
     document.title = [restaurantName, menuTitle].filter(Boolean).join(" — ") || "Menu";
   }, [loaded, saved.general]);
 
+  const handleOpenAdmin = async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) setAdminOpen(true);
+    else setLoginOpen(true);
+  };
+
+  const handleAdminChange = async (open: boolean) => {
+    setAdminOpen(open);
+    if (!open) await supabase.auth.signOut();
+  };
+
   return (
     <>
-      <MenuReader state={shown} ready={loaded} adminOpen={adminOpen} onOpenAdmin={() => setAdminOpen(true)} />
+      <MenuReader state={shown} ready={loaded} adminOpen={adminOpen} onOpenAdmin={handleOpenAdmin} />
+      <AdminLogin
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        onSuccess={() => {
+          setLoginOpen(false);
+          setAdminOpen(true);
+        }}
+      />
       <AdminPanel
         open={adminOpen}
-        onOpenChange={setAdminOpen}
+        onOpenChange={handleAdminChange}
         livePreview={livePreview}
         onLivePreviewChange={setLivePreview}
       />
