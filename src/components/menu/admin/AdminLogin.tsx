@@ -24,7 +24,7 @@ export function AdminLogin({ open, onClose, onSuccess }: AdminLoginProps) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
-      setError("Wrong email or password");
+      setError(error.message);
       return;
     }
     setPassword("");
