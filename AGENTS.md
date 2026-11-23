@@ -28,3 +28,10 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- The menu book uses the `page-flip` engine directly (src/components/menu/FlipBook.tsx), building page nodes outside React — the engine moves DOM nodes, which breaks React-managed children.
+- Book geometry, orientation and page-counter rules live as pure functions in src/lib/menu/layout.ts, covered by layout.test.ts — keep UI components free of that math.
+- Menu settings persist through the `MenuRepository` interface (src/lib/menu/repository.ts); swap the implementation to move storage to the cloud without touching UI.
+- Menu page images render with object-fit: contain inside a gutter-aware box; never add anything that crops, scales beyond contain, or overlays the image.

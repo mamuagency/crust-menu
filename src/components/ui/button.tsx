@@ -16,12 +16,17 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        bookArrow:
+          "rounded-full border border-menu-line bg-menu-surface text-menu-primary backdrop-blur-sm transition-all duration-300 hover:border-menu-primary hover:bg-menu-primary hover:text-menu-bg focus-visible:ring-menu-primary disabled:opacity-25",
+        bookControl:
+          "rounded-full text-menu-muted transition-colors hover:bg-menu-surface hover:text-menu-primary focus-visible:ring-menu-primary disabled:opacity-30",
       },
       size: {
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
+        arrow: "h-14 w-14 [&_svg]:size-6",
       },
     },
     defaultVariants: {
