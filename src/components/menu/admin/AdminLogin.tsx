@@ -65,7 +65,12 @@ export function AdminLogin({ open, onClose, onSuccess }: AdminLoginProps) {
           <Button type="submit" disabled={loading} className="flex-1">
             {loading ? "..." : "Login"}
           </Button>
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="text-white hover:text-white"
+          >
             Cancel
           </Button>
         </div>
