@@ -36,5 +36,6 @@ export interface MenuState {
   general: GeneralSettings;
   theme: ThemeSettings;
   cover: MenuImage;
+  backCover?: MenuImage;
   pages: MenuImage[];
 }
