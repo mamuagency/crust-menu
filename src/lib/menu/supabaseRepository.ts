@@ -75,7 +75,9 @@ export const supabaseMenuRepository: MenuRepository = {
   },
 
   async save(state: MenuState) {
-    const pending = [state.cover, ...state.pages].filter((i) => i.src.startsWith("data:"));
+    const pending = [state.cover, ...(state.backCover ? [state.backCover] : []), ...state.pages].filter((i) =>
+      i.src.startsWith("data:"),
+    );
     if (pending.length > 0) startUploads(pending.map((i) => ({ id: i.id, name: i.name })));
 
     try {
