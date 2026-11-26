@@ -28,11 +28,12 @@ export function AdminPanel({ open, onOpenChange, livePreview, onLivePreviewChang
     try {
       await save();
       toast.success("Changes saved", { description: "They'll still be here after a refresh on this device." });
-    } catch (error) {
-      console.error(error);
-      toast.error("Couldn't save — the browser may be out of storage space.");
-    }
-  };
+} catch (error) {
+  console.error("Save failed", error);
+  toast.error(
+    "Save failed: " + (error instanceof Error ? error.message : JSON.stringify(error)),
+  );
+}
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
