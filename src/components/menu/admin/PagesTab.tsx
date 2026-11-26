@@ -80,14 +80,14 @@ export function PagesTab() {
     e.target.value = "";
   };
 
-  const onCoverChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  const onBackChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
     const [image] = await readImages([file]);
     if (image) {
-      updateDraft((s) => ({ ...s, cover: image }));
-      toast.success("Cover replaced");
+      updateDraft((s) => ({ ...s, backCover: image }));
+      toast.success("Back cover set");
     }
   };
 
