@@ -246,6 +246,21 @@ function SortablePage({
       >
         <img src={page.src} alt={`Page ${number}`} className="aspect-[3/4] w-full object-contain" draggable={false} />
       </button>
+            {upload && upload.status !== "done" && (
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex aspect-[3/4] w-full flex-col items-center justify-center gap-2 bg-black/60 text-white">
+          {upload.status === "error" ? (
+            <>
+              <AlertCircle className="size-8 text-red-400" />
+              <span className="text-xs">Failed</span>
+            </>
+          ) : (
+            <>
+              <Loader2 className="size-8 animate-spin" />
+              <span className="text-xs font-medium">{upload.percent}%</span>
+            </>
+          )}
+        </div>
+      )}
       <span className="pointer-events-none absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-background/85 px-2 py-0.5 text-[0.65rem] font-medium text-foreground">
         <GripVertical className="size-3 text-muted-foreground" /> {number}
       </span>
