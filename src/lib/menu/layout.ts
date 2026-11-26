@@ -50,7 +50,7 @@ export function computePageSize(
   return { width: Math.floor(h * aspect), height: h };
 }
 
-export type ViewKind = "cover" | "spread" | "single" | "back";
+export type ViewKind = "cover" | "spread" | "single" | "back" | "closedBack";
 
 export interface BookView {
   kind: ViewKind;
