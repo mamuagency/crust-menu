@@ -94,7 +94,7 @@ export function pageCounterLabel(view: BookView, internalCount: number): string 
 export function stageGeometry(view: BookView, orientation: Orientation, pageWidth: number) {
   if (orientation === "portrait") return { width: pageWidth, offset: 0 };
   if (view.kind === "cover") return { width: pageWidth, offset: -pageWidth };
-  if (view.kind === "back") return { width: pageWidth, offset: 0 };
+  if (view.kind === "closedBack" || view.kind === "back") return { width: pageWidth, offset: 0 };
   return { width: pageWidth * 2, offset: 0 };
 }
 
