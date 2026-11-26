@@ -8,7 +8,7 @@ export function UploadProgress() {
   const hasError = uploads.some((u) => u.status === "error");
 
   return (
-    <div className="fixed bottom-4 left-4 z-[100] w-72 rounded-lg border border-white/10 bg-[#0b1226] p-4 text-white shadow-2xl">
+<div className="fixed top-4 right-4 z-[9999] w-72 rounded-lg border border-white/10 bg-[#0b1226] p-4 text-white shadow-2xl">
       <p className="mb-3 text-sm font-semibold">
         {hasError ? "Upload failed" : done === uploads.length ? "All saved ✓" : `Uploading ${done}/${uploads.length}`}
       </p>
