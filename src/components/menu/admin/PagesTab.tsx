@@ -17,7 +17,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ImagePlus, RefreshCw, Trash2, Upload } from "lucide-react";
+import { AlertCircle, GripVertical, ImagePlus, Loader2, RefreshCw, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import {
