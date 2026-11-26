@@ -113,12 +113,9 @@ export function MenuReader({ state, ready, adminOpen, onOpenAdmin }: MenuReaderP
     }
     return list;
   }, [cover, state.pages, state.backCover, general.restaurantName]);
-  );
   const total = pages.length;
   const internalCount = state.pages.length;
-  
-  const hasBack = Boolean(state.backCover);
-  
+
   const orientation = area ? chooseOrientation(area, aspect) : "landscape";
   const size = area ? computePageSize(area, aspect, orientation, bookScale) : null;
 
