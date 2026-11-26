@@ -1,13 +1,13 @@
-import { supabase } from "@/lib/supabase";
+import { SUPABASE_ANON_KEY, SUPABASE_URL, supabase } from "@/lib/supabase";
 
 import { parseMenuState } from "./schema";
 import type { MenuRepository } from "./repository";
 import type { MenuImage, MenuState } from "./types";
+import { clearUploads, startUploads, updateUpload } from "./uploadProgress";
 
 const ROW_ID = "main";
 const BUCKET = "menu-images";
 
-/** Converts a data URL to a Blob without using fetch. */
 function dataUrlToBlob(dataUrl: string): Blob {
   const [header, base64] = dataUrl.split(",");
   const mime = header.match(/:(.*?);/)?.[1] ?? "image/jpeg";
@@ -17,7 +17,31 @@ function dataUrlToBlob(dataUrl: string): Blob {
   return new Blob([bytes], { type: mime });
 }
 
-/** Turns an image uploaded from the device (data URL) into a public URL in Supabase Storage. */
+/** Uploads a file and reports real progress (0-100). */
+async function uploadWithProgress(path: string, blob: Blob, onProgress: (p: number) => void): Promise<void> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) throw new Error("You are not logged in. Please log in again.");
+
+  return new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${encodeURIComponent(path)}`);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    xhr.setRequestHeader("apikey", SUPABASE_ANON_KEY);
+    xhr.setRequestHeader("x-upsert", "true");
+    xhr.setRequestHeader("Content-Type", blob.type);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.onload = () =>
+      xhr.status >= 200 && xhr.status < 300
+        ? resolve()
+        : reject(new Error(`Upload failed (${xhr.status}): ${xhr.responseText}`));
+    xhr.onerror = () => reject(new Error("Network error during upload"));
+    xhr.send(blob);
+  });
+}
+
 async function uploadIfNeeded(image: MenuImage): Promise<MenuImage> {
   if (!image.src.startsWith("data:")) return image;
 
@@ -25,16 +49,18 @@ async function uploadIfNeeded(image: MenuImage): Promise<MenuImage> {
   const ext = blob.type.split("/")[1]?.split("+")[0] || "png";
   const path = `${image.id}-${Date.now()}.${ext}`;
 
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(path, blob, { contentType: blob.type, upsert: true });
-  if (error) throw error;
+  try {
+    await uploadWithProgress(path, blob, (percent) => updateUpload(image.id, { percent }));
+  } catch (error) {
+    updateUpload(image.id, { status: "error" });
+    throw error;
+  }
+  updateUpload(image.id, { percent: 100, status: "done" });
 
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
   return { ...image, src: data.publicUrl };
 }
 
-/** Cloud storage: everyone reads, only the admin account can write. */
 export const supabaseMenuRepository: MenuRepository = {
   shared: true,
 
@@ -49,14 +75,23 @@ export const supabaseMenuRepository: MenuRepository = {
   },
 
   async save(state: MenuState) {
-    const cover = await uploadIfNeeded(state.cover);
-    const pages = await Promise.all(state.pages.map(uploadIfNeeded));
-    const next: MenuState = { ...state, cover, pages };
+    const pending = [state.cover, ...state.pages].filter((i) => i.src.startsWith("data:"));
+    if (pending.length > 0) startUploads(pending.map((i) => ({ id: i.id, name: i.name })));
 
-    const { error } = await supabase
-      .from("menu_state")
-      .upsert({ id: ROW_ID, data: next, updated_at: new Date().toISOString() });
-    if (error) throw error;
+    try {
+      const cover = await uploadIfNeeded(state.cover);
+      const pages = await Promise.all(state.pages.map(uploadIfNeeded));
+      const next: MenuState = { ...state, cover, pages };
+
+      const { error } = await supabase
+        .from("menu_state")
+        .upsert({ id: ROW_ID, data: next, updated_at: new Date().toISOString() });
+      if (error) throw error;
+      clearUploads(1500);
+    } catch (error) {
+      clearUploads(5000);
+      throw error;
+    }
   },
 
   async clear() {
