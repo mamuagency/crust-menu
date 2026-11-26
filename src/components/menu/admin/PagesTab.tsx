@@ -121,11 +121,25 @@ export function PagesTab() {
     <div className="space-y-4">
       <Section title="Cover" description="Shown alone on the front of the book. It is never counted as a menu page.">
         <div className="flex items-center gap-4">
-          <img
-            src={draft.cover.src}
-            alt="Current cover"
-            className="h-28 w-auto rounded-md border border-border bg-muted object-contain"
-          />
+          <div className="relative">
+            <img
+              src={draft.cover.src}
+              alt="Current cover"
+              className="h-28 w-auto rounded-md border border-border bg-muted object-contain"
+            />
+            {coverUpload && coverUpload.status !== "done" && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-md bg-black/60 text-white">
+                {coverUpload.status === "error" ? (
+                  <AlertCircle className="size-6 text-red-400" />
+                ) : (
+                  <>
+                    <Loader2 className="size-6 animate-spin" />
+                    <span className="text-xs">{coverUpload.percent}%</span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
           <div className="min-w-0 space-y-2">
             <p className="truncate text-sm text-foreground">{draft.cover.name}</p>
             <Button variant="outline" size="sm" onClick={() => coverInput.current?.click()}>
