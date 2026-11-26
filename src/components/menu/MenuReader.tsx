@@ -17,6 +17,9 @@ import type { MenuState } from "@/lib/menu/types";
 import { cn } from "@/lib/utils";
 
 const FLIP_MS = 800;
+const BLANK_PAGE =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="14"><rect width="10" height="14" fill="#f3ebe0"/></svg>');
 
 interface MenuReaderProps {
   state: MenuState;
