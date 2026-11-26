@@ -7,6 +7,7 @@ import { MenuReader } from "@/components/menu/MenuReader";
 import { supabaseMenuRepository } from "@/lib/menu/supabaseRepository";
 import { MenuStoreProvider, useMenuStore } from "@/lib/menu/store";
 import { supabase } from "@/lib/supabase";
+import { UploadProgress } from "@/components/menu/admin/UploadProgress";
 
 export const Route = createFileRoute("/")({
   head: () => ({
