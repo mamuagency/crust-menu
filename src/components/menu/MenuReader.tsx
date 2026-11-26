@@ -374,6 +374,13 @@ export function MenuReader({ state, ready, adminOpen, onOpenAdmin }: MenuReaderP
         </nav>
       </main>
 
+      <footer className="flex flex-none items-center justify-between gap-3 px-4 pb-2 text-[0.6rem] text-menu-muted opacity-70 sm:px-6 sm:text-[0.65rem]">
+        <p>
+          <span dir="rtl">جميع الحقوق محفوظة لشركة MAMU للتسويق</span> · by: MAMU Agency
+        </p>
+        <p>© 2027 All Rights Reserved</p>
+      </footer>
+
       <Button
         variant="bookControl"
         onClick={onOpenAdmin}
