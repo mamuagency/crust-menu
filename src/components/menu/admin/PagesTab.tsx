@@ -52,6 +52,7 @@ async function readImages(files: FileList | File[]): Promise<MenuImage[]> {
 
 export function PagesTab() {
   const { draft, updateDraft } = useMenuStore();
+    const coverUpload = useUploads().find((u) => u.id === draft.cover.id);
   const [pendingDelete, setPendingDelete] = useState<MenuImage | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const addInput = useRef<HTMLInputElement>(null);
