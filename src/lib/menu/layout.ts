@@ -66,10 +66,14 @@ export function getBookView(index: number, totalPages: number, orientation: Orie
   const last = totalPages - 1;
   const i = Math.max(0, Math.min(index, last));
   if (i === 0) return { kind: "cover", visible: [0] };
-  if (orientation === "portrait") return { kind: "single", visible: [i] };
+  if (orientation === "portrait") {
+    return i === last && last > 0 ? { kind: "closedBack", visible: [i] } : { kind: "single", visible: [i] };
+  }
+  // Landscape: the final hard page shown alone means the book is closed from behind.
+  if (i === last) return { kind: "closedBack", visible: [last] };
   const left = i % 2 === 1 ? i : i - 1;
   const right = left + 1;
-  if (right > last) return { kind: "back", visible: [left] };
+  if (right >= last) return { kind: "closedBack", visible: [last] };
   return { kind: "spread", visible: [left, right] };
 }
 
