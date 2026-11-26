@@ -33,6 +33,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { readImageFile } from "@/lib/menu/files";
 import { useMenuStore } from "@/lib/menu/store";
+import { useUploads } from "@/lib/menu/uploadProgress";
 import type { MenuImage } from "@/lib/menu/types";
 import { cn } from "@/lib/utils";
 
