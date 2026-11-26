@@ -80,6 +80,7 @@ export function getBookView(index: number, totalPages: number, orientation: Orie
 /** Page counter text. Internal pages are numbered from 1; the cover is not counted. */
 export function pageCounterLabel(view: BookView, internalCount: number): string {
   if (view.kind === "cover") return "Cover";
+  if (view.kind === "closedBack") return "Back cover";
   if (view.visible.length === 2) {
     return `Pages ${view.visible[0]}–${view.visible[1]} of ${internalCount}`;
   }
