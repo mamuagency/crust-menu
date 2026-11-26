@@ -78,6 +78,7 @@ function MenuExperience() {
         livePreview={livePreview}
         onLivePreviewChange={setLivePreview}
       />
+      <UploadProgress />
     </>
   );
 }
