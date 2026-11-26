@@ -29,6 +29,7 @@ export const menuStateSchema = z.object({
     radius: z.number().min(0).max(24),
   }),
   cover: image,
+  backCover: image.optional(),
   pages: z.array(image),
 });
 
