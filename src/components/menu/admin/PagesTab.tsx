@@ -152,6 +152,54 @@ export function PagesTab() {
         </div>
         <input ref={coverInput} type="file" accept="image/*" className="hidden" onChange={onCoverChange} />
       </Section>
+            <Section title="Back cover" description="Shown alone on the back of the book. The book closes from behind on this page.">
+        <div className="flex items-center gap-4">
+          {draft.backCover ? (
+            <div className="relative">
+              <img
+                src={draft.backCover.src}
+                alt="Current back cover"
+                className="h-28 w-auto rounded-md border border-border bg-muted object-contain"
+              />
+              {backUpload && backUpload.status !== "done" && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-md bg-black/60 text-white">
+                  {backUpload.status === "error" ? (
+                    <AlertCircle className="size-6 text-red-400" />
+                  ) : (
+                    <>
+                      <Loader2 className="size-6 animate-spin" />
+                      <span className="text-xs">{backUpload.percent}%</span>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex h-28 w-20 items-center justify-center rounded-md border border-dashed border-input text-xs text-muted-foreground">
+              None
+            </div>
+          )}
+          <div className="min-w-0 space-y-2">
+            {draft.backCover && <p className="truncate text-sm text-foreground">{draft.backCover.name}</p>}
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => backInput.current?.click()}>
+                <RefreshCw /> {draft.backCover ? "Replace back cover" : "Upload back cover"}
+              </Button>
+              {draft.backCover && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => updateDraft((s) => ({ ...s, backCover: undefined }))}
+                >
+                  <Trash2 /> Remove
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+        <input ref={backInput} type="file" accept="image/*" className="hidden" onChange={onBackChange} />
+      </Section>
 
       <Section
         title={`Menu pages (${draft.pages.length})`}
