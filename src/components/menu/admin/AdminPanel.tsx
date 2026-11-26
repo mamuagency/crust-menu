@@ -27,13 +27,14 @@ export function AdminPanel({ open, onOpenChange, livePreview, onLivePreviewChang
   const handleSave = async () => {
     try {
       await save();
-      toast.success("Changes saved", { description: "They'll still be here after a refresh on this device." });
-} catch (error) {
-  console.error("Save failed", error);
-  toast.error(
-    "Save failed: " + (error instanceof Error ? error.message : JSON.stringify(error)),
-  );
-}
+      toast.success("Changes saved", { description: "Your changes are now live for everyone." });
+    } catch (error) {
+      console.error("Save failed", error);
+      toast.error(
+        "Save failed: " + (error instanceof Error ? error.message : JSON.stringify(error)),
+      );
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
