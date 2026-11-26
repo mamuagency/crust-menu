@@ -52,13 +52,14 @@ async function readImages(files: FileList | File[]): Promise<MenuImage[]> {
 
 export function PagesTab() {
   const { draft, updateDraft } = useMenuStore();
-    const coverUpload = useUploads().find((u) => u.id === draft.cover.id);
+  const uploads = useUploads();
+  const coverUpload = uploads.find((u) => u.id === draft.cover.id);
+  const backUpload = uploads.find((u) => u.id === draft.backCover?.id);
   const [pendingDelete, setPendingDelete] = useState<MenuImage | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const addInput = useRef<HTMLInputElement>(null);
   const coverInput = useRef<HTMLInputElement>(null);
   const backInput = useRef<HTMLInputElement>(null);
-  const backUpload = useUploads().find((u) => u.id === draft.backCover?.id);
   const replaceInput = useRef<HTMLInputElement>(null);
   const replaceTarget = useRef<string | null>(null);
 
@@ -78,6 +79,17 @@ export function PagesTab() {
   const onAddChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) void addPages(e.target.files);
     e.target.value = "";
+  };
+
+  const onCoverChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const [image] = await readImages([file]);
+    if (image) {
+      updateDraft((s) => ({ ...s, cover: image }));
+      toast.success("Cover replaced");
+    }
   };
 
   const onBackChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -152,7 +164,11 @@ export function PagesTab() {
         </div>
         <input ref={coverInput} type="file" accept="image/*" className="hidden" onChange={onCoverChange} />
       </Section>
-            <Section title="Back cover" description="Shown alone on the back of the book. The book closes from behind on this page.">
+
+      <Section
+        title="Back cover"
+        description="Shown alone on the back of the book. The book closes from behind on this page."
+      >
         <div className="flex items-center gap-4">
           {draft.backCover ? (
             <div className="relative">
@@ -311,7 +327,7 @@ function SortablePage({
       >
         <img src={page.src} alt={`Page ${number}`} className="aspect-[3/4] w-full object-contain" draggable={false} />
       </button>
-            {upload && upload.status !== "done" && (
+      {upload && upload.status !== "done" && (
         <div className="pointer-events-none absolute inset-x-0 top-0 flex aspect-[3/4] w-full flex-col items-center justify-center gap-2 bg-black/60 text-white">
           {upload.status === "error" ? (
             <>
