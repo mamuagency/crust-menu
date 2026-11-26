@@ -57,6 +57,8 @@ export function PagesTab() {
   const [dragOver, setDragOver] = useState(false);
   const addInput = useRef<HTMLInputElement>(null);
   const coverInput = useRef<HTMLInputElement>(null);
+  const backInput = useRef<HTMLInputElement>(null);
+  const backUpload = useUploads().find((u) => u.id === draft.backCover?.id);
   const replaceInput = useRef<HTMLInputElement>(null);
   const replaceTarget = useRef<string | null>(null);
 
