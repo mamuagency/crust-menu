@@ -2,8 +2,7 @@ import { useUploads } from "@/lib/menu/uploadProgress";
 
 export function UploadProgress() {
   const uploads = useUploads();
-  if (uploads.length === 0)
-    return <div className="fixed top-4 right-4 z-[9999] rounded bg-red-600 p-3 text-white">TEST BOX</div>;
+  if (uploads.length === 0) return null;
 
   const done = uploads.filter((u) => u.status === "done").length;
   const hasError = uploads.some((u) => u.status === "error");
