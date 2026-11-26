@@ -7,11 +7,21 @@ import type { MenuImage, MenuState } from "./types";
 const ROW_ID = "main";
 const BUCKET = "menu-images";
 
+/** Converts a data URL to a Blob without using fetch. */
+function dataUrlToBlob(dataUrl: string): Blob {
+  const [header, base64] = dataUrl.split(",");
+  const mime = header.match(/:(.*?);/)?.[1] ?? "image/jpeg";
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
 /** Turns an image uploaded from the device (data URL) into a public URL in Supabase Storage. */
 async function uploadIfNeeded(image: MenuImage): Promise<MenuImage> {
   if (!image.src.startsWith("data:")) return image;
 
-  const blob = await (await fetch(image.src)).blob();
+  const blob = dataUrlToBlob(image.src);
   const ext = blob.type.split("/")[1]?.split("+")[0] || "png";
   const path = `${image.id}-${Date.now()}.${ext}`;
 
