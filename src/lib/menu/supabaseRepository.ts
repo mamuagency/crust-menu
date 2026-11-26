@@ -82,8 +82,9 @@ export const supabaseMenuRepository: MenuRepository = {
 
     try {
       const cover = await uploadIfNeeded(state.cover);
+      const backCover = state.backCover ? await uploadIfNeeded(state.backCover) : undefined;
       const pages = await Promise.all(state.pages.map(uploadIfNeeded));
-      const next: MenuState = { ...state, cover, pages };
+      const next: MenuState = { ...state, cover, pages, ...(backCover ? { backCover } : {}) };
 
       const { error } = await supabase
         .from("menu_state")
