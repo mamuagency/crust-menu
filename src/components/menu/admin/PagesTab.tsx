@@ -242,7 +242,7 @@ function SortablePage({
   onDelete: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: page.id });
-    const upload = useUploads().find((u) => u.id === page.id);
+  const upload = { id: page.id, name: "test", percent: 42, status: "uploading" as const };
   return (
     <li
       ref={setNodeRef}
