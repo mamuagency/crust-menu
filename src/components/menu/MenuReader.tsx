@@ -86,7 +86,7 @@ export function MenuReader({ state, ready, adminOpen, onOpenAdmin }: MenuReaderP
   const bookScale = useDebounced(theme.bookScale, 200);
   const bookShadow = useDebounced(theme.shadow, 200);
 
-    const pages = useMemo<FlipBookPage[]>(() => {
+  const pages = useMemo<FlipBookPage[]>(() => {
     const list: FlipBookPage[] = [
       { id: cover.id, src: cover.src, alt: `${general.restaurantName} menu cover`, hard: true },
       ...state.pages.map((p, i) => ({
@@ -96,10 +96,20 @@ export function MenuReader({ state, ready, adminOpen, onOpenAdmin }: MenuReaderP
         hard: false,
       })),
     ];
-    // Last page becomes a hard back cover so the book closes from behind.
-    if (list.length > 1) list[list.length - 1] = { ...list[list.length - 1]!, hard: true };
+    if (state.backCover) {
+      // The book needs an even page count to close from behind; pad with a blank page if needed.
+      if ((list.length + 1) % 2 !== 0) {
+        list.push({ id: "blank-pad", src: BLANK_PAGE, alt: "", hard: false });
+      }
+      list.push({
+        id: state.backCover.id,
+        src: state.backCover.src,
+        alt: `${general.restaurantName} menu back cover`,
+        hard: true,
+      });
+    }
     return list;
-  }, [cover, state.pages, general.restaurantName]);
+  }, [cover, state.pages, state.backCover, general.restaurantName]);
   );
   const total = pages.length;
   const internalCount = state.pages.length;
