@@ -116,7 +116,8 @@ export function MenuReader({ state, ready, adminOpen, onOpenAdmin }: MenuReaderP
   );
   const total = pages.length;
   const internalCount = state.pages.length;
-
+  const hasBack = Boolean(state.backCover);
+  
   const orientation = area ? chooseOrientation(area, aspect) : "landscape";
   const size = area ? computePageSize(area, aspect, orientation, bookScale) : null;
 
